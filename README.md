@@ -28,7 +28,7 @@ The node outputs the modified latent tensor while preserving the original struct
 
 ## Node Location
 
-You can find this node in the `roCuda/latents` category in ComfyUI.
+You can find this node in the `tocuda_nodes/latents` category in ComfyUI.
 
 ## Features
 
