@@ -4,9 +4,6 @@ Author: imcrisam
 Category: tocuda_nodes/latents
 """
 
-import torch
-
-
 class latent_to_cuda:
     def __init__(self):
         pass
