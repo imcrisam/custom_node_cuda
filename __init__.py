@@ -3,10 +3,10 @@ ComfyUI Custom Node Package: latent_to_cuda
 Author: imcrisam
 """
 
-from nodes.conditional_to_path import LoadCondFromPath, SaveCondToPath
-from nodes.latent_to_path import LoadLatentFromPath, SaveLatentToPath
+from nodes_lowram.conditional_to_path import LoadCondFromPath, SaveCondToPath
+from nodes_lowram.latent_to_path import LoadLatentFromPath, SaveLatentToPath
 
-from .nodes.to_cuda import latent_to_cuda
+from .nodes_lowram.to_cuda import latent_to_cuda
 
 NODE_CLASS_MAPPINGS = {
     "latent_to_cuda": latent_to_cuda,
