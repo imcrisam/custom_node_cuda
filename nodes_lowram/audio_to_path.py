@@ -25,7 +25,7 @@ class SaveAudioToPath:
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
         waveform = audio["waveform"]
         sample_rate = audio["sample_rate"]
-        torchaudio.save(full_path, waveform[0], sample_rate)
+        torchaudio.save(full_path, waveform[0], sample_rate, format="wav", backend="soundfile")
         print(f"[SaveAudioToPath] saved to {full_path}")
         return ()
 
@@ -45,7 +45,7 @@ class LoadAudioFromPath:
 
     def load(self, path):
         full_path = os.path.join(folder_paths.base_path, strip_path(path))
-        waveform, sample_rate = torchaudio.load(full_path)
+        waveform, sample_rate = torchaudio.load(full_path, backend="soundfile")
         audio = {"waveform": waveform.unsqueeze(0), "sample_rate": sample_rate}
         print(f"[LoadAudioFromPath] loaded from {full_path}")
         return (audio,)
