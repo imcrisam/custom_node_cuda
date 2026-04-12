@@ -5,8 +5,15 @@ Author: imcrisam
 
 from .nodes_lowram.conditional_to_path import LoadCondFromPath, SaveCondToPath
 from .nodes_lowram.latent_to_path import LoadLatentFromPath, SaveLatentToPath
-from .nodes_lowram.audio_to_path import SaveAudioToPath, LoadAudioFromPath
 from .nodes_lowram.to_cuda import latent_to_cuda
+
+try:
+    from .nodes_lowram.audio_to_path import SaveAudioToPath, LoadAudioFromPath
+    print("🔥 audio_to_path IMPORTED")
+except Exception as e:
+    print(f"❌ audio_to_path FAILED: {e}")
+    SaveAudioToPath = None
+    LoadAudioFromPath = None
 
 NODE_CLASS_MAPPINGS = {
     "latent_to_cuda": latent_to_cuda,
@@ -15,7 +22,7 @@ NODE_CLASS_MAPPINGS = {
     "SaveCondToPath": SaveCondToPath,
     "LoadCondFromPath": LoadCondFromPath,
     "SaveAudioToPath": SaveAudioToPath,
-    "LoadAudioFromPath": LoadAudioFromPath,
+    "LoadAudioFromPath": LoadAudioFromPath
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -25,7 +32,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "SaveCondToPath": "Save Conditioning to Path",
     "LoadCondFromPath": "Load Conditioning from Path",
     "SaveAudioToPath": "Save Audio to Path",
-    "LoadAudioFromPath": "Load Audio from Path",
+    "LoadAudioFromPath": "Load Audio from Path"
 }
 
 print("🔥 custom_node_cuda IMPORTED")
