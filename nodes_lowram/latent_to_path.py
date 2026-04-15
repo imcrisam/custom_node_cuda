@@ -33,6 +33,7 @@ class LoadLatentFromPath:
         return {
             "required": {
                 "path": ("STRING", {**path_widget(["pt"]), "default": "output/my_latent.pt"}),
+                "weights_only": ("BOOLEAN", {"default": True}),
             }
         }
 
@@ -40,8 +41,8 @@ class LoadLatentFromPath:
     FUNCTION = "load"
     CATEGORY = "latent/path"
 
-    def load(self, path):
+    def load(self, path, weights_only):
         full_path = os.path.join(folder_paths.base_path, strip_path(path))
-        samples = torch.load(full_path, map_location="cpu")
+        samples = torch.load(full_path, map_location="cpu", weights_only=weights_only)
         print(f"[LoadLatentFromPath] loaded from {full_path}")
         return ({"samples": samples},)

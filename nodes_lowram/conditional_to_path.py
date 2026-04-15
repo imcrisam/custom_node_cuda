@@ -33,6 +33,7 @@ class LoadCondFromPath:
         return {
             "required": {
                 "path": ("STRING", {**path_widget(["pt"]), "default": "output/my_cond.pt"}),
+                "weights_only": ("BOOLEAN", {"default": False}),
             }
         }
 
@@ -40,8 +41,8 @@ class LoadCondFromPath:
     FUNCTION = "load"
     CATEGORY = "conditioning/path"
 
-    def load(self, path):
+    def load(self, path, weights_only):
         full_path = os.path.join(folder_paths.base_path, strip_path(path))
-        conditioning = torch.load(full_path, map_location="cpu")
+        conditioning = torch.load(full_path, map_location="cpu", weights_only=weights_only)
         print(f"[LoadCondFromPath] loaded from {full_path}")
         return (conditioning,)
