@@ -13,7 +13,7 @@ Nodos incluidos:
 
 import torch
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageOps
 import os
 import folder_paths
 
@@ -51,11 +51,18 @@ class KDP_Emboss:
     RETURN_NAMES = ("image",)
     FUNCTION = "apply"
 
+    MODES = [
+        "Coloring page (edge detect)",
+        "Emboss clásico",
+        "Emboss + invertir",
+    ]
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "image": ("IMAGE",),
+                "mode": (cls.MODES,),
                 "strength": ("FLOAT", {
                     "default": 1.0,
                     "min": 0.1,
@@ -66,17 +73,32 @@ class KDP_Emboss:
             }
         }
 
-    def apply(self, image, strength):
+    def apply(self, image, mode, strength):
         pil = tensor2pil(image)
 
-        # Aplicar emboss nativo de PIL
-        embossed = pil.filter(ImageFilter.EMBOSS)
+        if mode == "Coloring page (edge detect)":
+            # Escala de grises → detección de bordes → invertir → líneas negras sobre blanco
+            gray = pil.convert("L")
+            edges = gray.filter(ImageFilter.FIND_EDGES)
+            if strength != 1.0:
+                edges = edges.filter(
+                    ImageFilter.UnsharpMask(radius=1, percent=int(200 * strength), threshold=1)
+                )
+            result = ImageOps.invert(edges).convert("RGB")
 
-        # Mezclar con original según strength (1.0 = 100% emboss)
-        if strength != 1.0:
-            embossed = Image.blend(pil, embossed, alpha=min(strength, 1.0))
+        elif mode == "Emboss + invertir":
+            embossed = pil.filter(ImageFilter.EMBOSS)
+            if strength != 1.0:
+                embossed = Image.blend(pil, embossed, alpha=min(strength, 1.0))
+            result = ImageOps.invert(embossed)
 
-        return (pil2tensor(embossed),)
+        else:  # Emboss clásico
+            embossed = pil.filter(ImageFilter.EMBOSS)
+            if strength != 1.0:
+                embossed = Image.blend(pil, embossed, alpha=min(strength, 1.0))
+            result = embossed
+
+        return (pil2tensor(result),)
 
 
 # ─────────────────────────────────────────────
@@ -351,5 +373,4 @@ class KDP_SaveAsPDF:
 
         print(f"[KDP Tools] PDF guardado en: {pdf_path}")
         return {}
-
 
