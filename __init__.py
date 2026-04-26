@@ -3,7 +3,7 @@ ComfyUI Custom Node Package: latent_to_cuda
 Author: imcrisam
 """
 
-from image.kdp_nodes import KDP_CanvasResize, KDP_ChangeColorDepth, KDP_Emboss, KDP_EnhanceDetail, KDP_ReplaceColor, KDP_SaveAsPDF
+from .image.kdp_nodes import KDP_CanvasResize, KDP_ChangeColorDepth, KDP_Emboss, KDP_EnhanceDetail, KDP_ReplaceColor, KDP_SaveAsPDF
 
 from .nodes_lowram.conditional_to_path import LoadCondFromPath, SaveCondToPath
 from .nodes_lowram.latent_to_path import LoadLatentFromPath, SaveLatentToPath
