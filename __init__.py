@@ -3,7 +3,7 @@ ComfyUI Custom Node Package: latent_to_cuda
 Author: imcrisam
 """
 
-from nodes_lowram.image_to_path import LoadImageFromPath, SaveImageToPath
+from .nodes_lowram.image_to_path import LoadImageFromPath, SaveImageToPath
 
 from .image.nodes import CanvasResize, ChangeColorDepth, Emboss, EnhanceDetail, ReplaceColor, SaveAsPDF
 
