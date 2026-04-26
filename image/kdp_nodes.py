@@ -77,13 +77,22 @@ class KDP_Emboss:
         pil = tensor2pil(image)
 
         if mode == "Coloring page (edge detect)":
-            # Escala de grises → detección de bordes → invertir → líneas negras sobre blanco
+            # 1. Escala de grises
             gray = pil.convert("L")
+            # 2. Blur previo para eliminar ruido/puntitos de imagen IA
+            blur_radius = max(0.5, 2.5 - strength)
+            gray = gray.filter(ImageFilter.GaussianBlur(radius=blur_radius))
+            # 3. Deteccion de bordes
             edges = gray.filter(ImageFilter.FIND_EDGES)
-            if strength != 1.0:
-                edges = edges.filter(
-                    ImageFilter.UnsharpMask(radius=1, percent=int(200 * strength), threshold=1)
-                )
+            # 4. Umbral: elimina grises intermedios y puntitos
+            arr = np.array(edges, dtype=np.float32)
+            threshold = max(8, min(int(40 / max(strength, 0.1)), 80))
+            arr = np.where(arr > threshold, arr, 0)
+            max_val = arr.max()
+            if max_val > 0:
+                arr = np.clip(arr * (255.0 / max_val) * min(strength, 2.0), 0, 255)
+            edges = Image.fromarray(arr.astype(np.uint8))
+            # 5. Invertir: lineas negras sobre fondo blanco
             result = ImageOps.invert(edges).convert("RGB")
 
         elif mode == "Emboss + invertir":
