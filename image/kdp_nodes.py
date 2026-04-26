@@ -45,7 +45,7 @@ def hex_to_rgb(hex_color: str) -> tuple:
 #  Equivalente a <Emboss/> en XnConvert
 # ─────────────────────────────────────────────
 
-class KDP_Emboss:
+class Emboss:
     CATEGORY = "KDP Tools"
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("image",)
@@ -115,7 +115,7 @@ class KDP_Emboss:
 #  Equivalente a <Replace_color src="#7e7e80" dst="#ffffff" tolerance="30"/>
 # ─────────────────────────────────────────────
 
-class KDP_ReplaceColor:
+class ReplaceColor:
     CATEGORY = "KDP Tools"
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("image",)
@@ -159,7 +159,7 @@ class KDP_ReplaceColor:
 #  Equivalente a <Enhance_detail/>
 # ─────────────────────────────────────────────
 
-class KDP_EnhanceDetail:
+class EnhanceDetail:
     CATEGORY = "KDP Tools"
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("image",)
@@ -210,7 +210,7 @@ class KDP_EnhanceDetail:
 #  Equivalente a <Change_color_depth method="0" dither="5" ncompo="-1"/>
 # ─────────────────────────────────────────────
 
-class KDP_ChangeColorDepth:
+class ChangeColorDepth:
     CATEGORY = "KDP Tools"
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("image",)
@@ -257,7 +257,7 @@ class KDP_ChangeColorDepth:
 #  + <Set_DPI x="600" y="600"/>
 # ─────────────────────────────────────────────
 
-class KDP_CanvasResize:
+class CanvasResize:
     CATEGORY = "KDP Tools"
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("image",)
@@ -330,7 +330,7 @@ class KDP_CanvasResize:
 #  Equivalente a <Output format="PDF"> con compress=0 y quality=99
 # ─────────────────────────────────────────────
 
-class KDP_SaveAsPDF:
+class SaveAsPDF:
     CATEGORY = "KDP Tools"
     RETURN_TYPES = ()
     OUTPUT_NODE = True
@@ -341,7 +341,7 @@ class KDP_SaveAsPDF:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "filename_prefix": ("STRING", {"default": "kdp_output"}),
+                "filename_prefix": ("STRING", {"default": "output"}),
                 "dpi": ("INT", {
                     "default": 600,
                     "min": 72,
@@ -363,7 +363,7 @@ class KDP_SaveAsPDF:
         pil = tensor2pil(image)
 
         # Resolver nombre de archivo (sin colisión si overwrite=False)
-        base_name = filename_prefix.strip() or "kdp_output"
+        base_name = filename_prefix.strip() or "output"
         pdf_path = os.path.join(output_dir, f"{base_name}.pdf")
 
         if not overwrite:
