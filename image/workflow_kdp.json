@@ -1,0 +1,125 @@
+{
+  "last_node_id": 8,
+  "last_link_id": 7,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [60, 300],
+      "size": [210, 120],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [1], "slot_index": 0},
+        {"name": "MASK",  "type": "MASK",  "links": [],  "slot_index": 1}
+      ],
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["example.png", "image"]
+    },
+    {
+      "id": 2,
+      "type": "KDP_Emboss",
+      "pos": [320, 200],
+      "size": [240, 80],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs":  [{"name": "image",    "type": "IMAGE", "link": 1}],
+      "outputs": [{"name": "image",    "type": "IMAGE", "links": [2], "slot_index": 0}],
+      "properties": {},
+      "widgets_values": [1.0]
+    },
+    {
+      "id": 3,
+      "type": "KDP_ReplaceColor",
+      "pos": [320, 320],
+      "size": [260, 120],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs":  [{"name": "image",     "type": "IMAGE", "link": 2}],
+      "outputs": [{"name": "image",     "type": "IMAGE", "links": [3], "slot_index": 0}],
+      "properties": {},
+      "widgets_values": ["#7e7e80", "#ffffff", 30]
+    },
+    {
+      "id": 4,
+      "type": "KDP_EnhanceDetail",
+      "pos": [320, 470],
+      "size": [260, 110],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs":  [{"name": "image",     "type": "IMAGE", "link": 3}],
+      "outputs": [{"name": "image",     "type": "IMAGE", "links": [4], "slot_index": 0}],
+      "properties": {},
+      "widgets_values": [2.0, 150, 3]
+    },
+    {
+      "id": 5,
+      "type": "KDP_ChangeColorDepth",
+      "pos": [320, 610],
+      "size": [260, 90],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs":  [{"name": "image",     "type": "IMAGE", "link": 4}],
+      "outputs": [{"name": "image",     "type": "IMAGE", "links": [5], "slot_index": 0}],
+      "properties": {},
+      "widgets_values": ["Grayscale", "Floyd-Steinberg"]
+    },
+    {
+      "id": 6,
+      "type": "KDP_CanvasResize",
+      "pos": [640, 300],
+      "size": [300, 160],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs":  [{"name": "image",     "type": "IMAGE", "link": 5}],
+      "outputs": [{"name": "image",     "type": "IMAGE", "links": [6], "slot_index": 0}],
+      "properties": {},
+      "widgets_values": [
+        "8.5 x 11\"  @ 600 DPI  (Letter / US Trade)",
+        "#ffffff",
+        "Centro",
+        true,
+        5100,
+        6600
+      ]
+    },
+    {
+      "id": 7,
+      "type": "KDP_SaveAsPDF",
+      "pos": [1000, 300],
+      "size": [280, 130],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs":  [{"name": "image",     "type": "IMAGE", "link": 6}],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": ["estructure_medieval", 600, 99, true]
+    }
+  ],
+  "links": [
+    [1, 1, 0, 2, 0, "IMAGE"],
+    [2, 2, 0, 3, 0, "IMAGE"],
+    [3, 3, 0, 4, 0, "IMAGE"],
+    [4, 4, 0, 5, 0, "IMAGE"],
+    [5, 5, 0, 6, 0, "IMAGE"],
+    [6, 6, 0, 7, 0, "IMAGE"]
+  ],
+  "groups": [
+    {
+      "title": "Pipeline KDP (replica XnConvert)",
+      "bounding": [40, 160, 1310, 620],
+      "color": "#3d85c8",
+      "font_size": 18
+    }
+  ],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}
