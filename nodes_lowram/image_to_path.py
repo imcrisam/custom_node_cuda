@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import torch
 import os
 import numpy as np
@@ -18,6 +20,7 @@ class SaveImageToPath:
                 "path": ("STRING", {**path_widget(SUPPORTED_FORMATS), "default": "output/my_image.png"}),
                 "format": (SUPPORTED_FORMATS, {"default": "png"}),
                 "quality": ("INT", {"default": 95, "min": 1, "max": 100, "step": 1}),
+                "overwrite": ("BOOLEAN", {"default": True}),
             }
         }
 
@@ -26,24 +29,27 @@ class SaveImageToPath:
     CATEGORY = "image/path"
     OUTPUT_NODE = True
 
-    def save(self, image, path, format, quality):
-        # image: (batch, H, W, C) float32 en [0, 1]
+    def save(self, image, path, format, quality, overwrite):
         base, _ = os.path.splitext(strip_path(path))
         full_path = os.path.join(folder_paths.base_path, f"{base}.{format}")
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
-        frame = image[0]  # (H, W, C)
+        if not overwrite:
+            base_path = full_path[: -len(format) - 1]
+            ts = datetime.now().strftime("%m%d%H%M%S")
+            full_path = f"{base_path}_{ts}.{format}"
+
+        frame = image[0]
         img_np = (frame.numpy() * 255).clip(0, 255).astype(np.uint8)
         pil_img = Image.fromarray(img_np)
 
         save_kwargs = {}
         if format == "jpg":
-            pil_img = pil_img.convert("RGB")  # jpg no soporta alpha
+            pil_img = pil_img.convert("RGB")
             save_kwargs["quality"] = quality
         elif format == "webp":
             save_kwargs["quality"] = quality
         elif format == "png":
-            # PNG compresión: 0-9, mapeamos quality 1-100 → 9-0
             save_kwargs["compress_level"] = max(0, min(9, 9 - round(quality / 11)))
 
         pil_img.save(full_path, format=format.upper(), **save_kwargs)
