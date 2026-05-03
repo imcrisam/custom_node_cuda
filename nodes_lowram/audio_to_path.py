@@ -56,7 +56,12 @@ class LoadAudioFromPath:
         try:
             full_path = os.path.join(folder_paths.base_path, strip_path(path))
             sample_rate, audio_np = wavfile.read(full_path)
-            waveform = torch.from_numpy(audio_np.T.astype(np.float32))  # (channels, samples)
+            audio_np = audio_np.astype(np.float32)
+
+            if audio_np.ndim == 1:
+                audio_np = audio_np[:, np.newaxis]  # mono: (S,) → (S, 1)
+
+            waveform = torch.from_numpy(audio_np.T)  # (channels, samples)
             audio = {"waveform": waveform.unsqueeze(0), "sample_rate": sample_rate}
             print(f"[LoadAudioFromPath] loaded from {full_path}")
             return (audio, full_path)
