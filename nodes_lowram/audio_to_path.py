@@ -28,7 +28,12 @@ class SaveAudioToPath:
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
             waveform = audio["waveform"][0]  # (channels, samples)
             sample_rate = audio["sample_rate"]
-            audio_np = waveform.numpy().T.astype(np.float32)  # (samples, channels)
+            audio_np = waveform.numpy().T  # (samples, channels)
+
+            # Convertir a int16 para compatibilidad máxima con wave, ffmpeg, etc.
+            audio_np = np.clip(audio_np, -1.0, 1.0)
+            audio_np = (audio_np * 32767).astype(np.int16)
+
             wavfile.write(full_path, sample_rate, audio_np)
             print(f"[SaveAudioToPath] saved to {full_path}")
             return (full_path,)
