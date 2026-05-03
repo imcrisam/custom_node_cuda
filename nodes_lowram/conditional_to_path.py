@@ -14,17 +14,23 @@ class SaveCondToPath:
             }
         }
 
-    RETURN_TYPES = ()
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("saved_path",)
     FUNCTION = "save"
     CATEGORY = "conditioning/path"
     OUTPUT_NODE = True
 
     def save(self, conditioning, path):
-        full_path = os.path.join(folder_paths.base_path, strip_path(path))
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
-        torch.save(conditioning, full_path)
-        print(f"[SaveCondToPath] saved to {full_path}")
-        return ()
+        try:
+            full_path = os.path.join(folder_paths.base_path, strip_path(path))
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            torch.save(conditioning, full_path)
+            print(f"[SaveCondToPath] saved to {full_path}")
+            return (full_path,)
+        except Exception as e:
+            error_msg = f"ERROR: {str(e)}"
+            print(f"[SaveCondToPath] {error_msg}")
+            return (error_msg,)
 
 
 class LoadCondFromPath:
@@ -37,12 +43,18 @@ class LoadCondFromPath:
             }
         }
 
-    RETURN_TYPES = ("CONDITIONING",)
+    RETURN_TYPES = ("CONDITIONING", "STRING")
+    RETURN_NAMES = ("conditioning", "loaded_path")
     FUNCTION = "load"
     CATEGORY = "conditioning/path"
 
     def load(self, path, weights_only):
-        full_path = os.path.join(folder_paths.base_path, strip_path(path))
-        conditioning = torch.load(full_path, map_location="cpu", weights_only=weights_only)
-        print(f"[LoadCondFromPath] loaded from {full_path}")
-        return (conditioning,)
+        try:
+            full_path = os.path.join(folder_paths.base_path, strip_path(path))
+            conditioning = torch.load(full_path, map_location="cpu", weights_only=weights_only)
+            print(f"[LoadCondFromPath] loaded from {full_path}")
+            return (conditioning, full_path)
+        except Exception as e:
+            error_msg = f"ERROR: {str(e)}"
+            print(f"[LoadCondFromPath] {error_msg}")
+            raise ValueError(error_msg)
