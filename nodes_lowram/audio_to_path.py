@@ -56,10 +56,20 @@ class LoadAudioFromPath:
         try:
             full_path = os.path.join(folder_paths.base_path, strip_path(path))
             sample_rate, audio_np = wavfile.read(full_path)
-            audio_np = audio_np.astype(np.float32)
 
+            # Normalizar según el tipo original ANTES de convertir
+            if audio_np.dtype == np.int16:
+                audio_np = audio_np.astype(np.float32) / 32768.0
+            elif audio_np.dtype == np.int32:
+                audio_np = audio_np.astype(np.float32) / 2147483648.0
+            elif audio_np.dtype == np.float32:
+                audio_np = audio_np  # ya está en rango correcto
+            else:
+                audio_np = audio_np.astype(np.float32)
+
+            # Manejar mono
             if audio_np.ndim == 1:
-                audio_np = audio_np[:, np.newaxis]  # mono: (S,) → (S, 1)
+                audio_np = audio_np[:, np.newaxis]  # (S,) → (S, 1)
 
             waveform = torch.from_numpy(audio_np.T)  # (channels, samples)
             audio = {"waveform": waveform.unsqueeze(0), "sample_rate": sample_rate}
